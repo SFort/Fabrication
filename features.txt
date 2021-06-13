@@ -1384,6 +1384,13 @@ weird_tweaks.villagers_follow_emerald_blocks
 	desc:
 		Villagers will follow players holding emerald blocks.
 
+weird_tweaks.enhanced_fire_resistance
+	name: Cleaner Visuals With Fire Resistance
+	since: 1.3.5
+	sides: client_only
+	desc:
+		When having the fire resistance effect fire won't show and increased under lava vision.
+
 woina
 	name: What's Old Is New Again
 	short_name: W.O.I.N.A.
