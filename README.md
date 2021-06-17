@@ -38,7 +38,7 @@ because i essetially did russial rullete debuging
 - tridents_in_void_return
 - nether_cauldron
 - silverfish_step
-- grindstone_disenchantig (just use the standalome mod for this)
+- grindstone_disenchantig (just use the dedicated mod for this)
 - toggle_sprint
 - colored_crack_particle
 - atlas_stuff
