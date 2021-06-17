@@ -41,13 +41,12 @@ because i essetially did russial rullete debuging
 - grindstone_disenchantig (just use the dedicated mod for this)
 - toggle_sprint
 - colored_crack_particle
-- atlas_stuff
+- atlas_viewer
 - better_pause_freezing
 - instant_pickup
 
 # Probably broke but time ran out and it compiles:
 
-- atlas_viewer
 - flat_items
 - dimensional_tools
 - toggle_stance
