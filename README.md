@@ -15,7 +15,8 @@ it's purley indeded as a messy and hopefully temporary 1.17 workaround.
 
 none of the dropped/broken features will ever be re-implemented on this branch  
 as that is not the point of this branch
-#Dropped Features:
+
+# Dropped Features:
 
 lots are a easy port but i wanna play fabrication 1.17 within the day
 some of these ware removed at whim because there was a wierd resource pack / Entity tick crash
@@ -42,7 +43,7 @@ so yes few of these are deffinatly perfectly functional and removed
 - better_pause_freezing
 - instant_pickup
 
-#Probably Deffinatly broke something but alloted time ran out and it compiles:
+# Probably Deffinatly broke something but alloted time ran out and it compiles:
 
 - atlas_viewer
 - flat_items
