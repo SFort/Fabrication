@@ -22,7 +22,7 @@ as that is not the point of this branch
 
 i wanna play fabrication 1.17 today  
 so some of the removed features are perfectly functional  
-because i essetially did russial rullete debuging
+because i got rid of anything that might of caused a crash
 
 - sync_attacker_yaw
 - alt_absorption_sound
