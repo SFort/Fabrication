@@ -35,21 +35,6 @@ public abstract class ResourcePackFeature implements Feature, ResourcePackProvid
 	public ResourcePackFeature(String path) {
 		this.configKey = "*."+path;
 		this.path = path;
-		if (Agnos.getCurrentEnv() == Env.CLIENT) {
-			initClient();
-		}
-	}
-	
-	@Environment(EnvType.CLIENT)
-	private void initClient() {
-		Set<ResourcePackProvider> providers = FabRefl.getProviders(MinecraftClient.getInstance().getResourcePackManager());
-		try {
-			providers.add(this);
-		} catch (UnsupportedOperationException e) {
-			FabLog.info("Injecting mutable resource pack provider set, as no-one else has yet.");
-			providers = Sets.newHashSet(providers);
-			FabRefl.setProviders(MinecraftClient.getInstance().getResourcePackManager(), providers);
-		}
 	}
 
 	@Override

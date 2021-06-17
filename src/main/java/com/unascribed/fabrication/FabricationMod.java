@@ -138,31 +138,7 @@ public class FabricationMod implements ModInitializer {
 			return b;
 		}
 	}
-	
-	public static Set<ServerPlayerEntity> getTrackers(Entity entity) {
-		ServerChunkManager cm = ((ServerWorld)entity.world).getChunkManager();
-		ThreadedAnvilChunkStorage tacs = cm.threadedAnvilChunkStorage;
-		Int2ObjectMap<EntityTracker> entityTrackers = FabRefl.getEntityTrackers(tacs);
-		EntityTracker tracker = entityTrackers.get(entity.getId());
-		if (tracker == null) return Collections.emptySet();
-		return FabRefl.getPlayersTracking(tracker);
-	}
-	
-	public static void sendToTrackersMatching(Entity entity, CustomPayloadS2CPacket pkt, Predicate<ServerPlayerEntity> predicate) {
-		if (entity.world.isClient) return;
-		Set<ServerPlayerEntity> playersTracking = getTrackers(entity);
-		if (entity instanceof ServerPlayerEntity) {
-			ServerPlayerEntity spe = (ServerPlayerEntity)entity;
-			if (predicate.test(spe)) {
-				spe.networkHandler.sendPacket(pkt);
-			}
-		}
-		for (ServerPlayerEntity spe : playersTracking) {
-			if (predicate.test(spe)) {
-				spe.networkHandler.sendPacket(pkt);
-			}
-		}
-	}
+
 
 	public static void sendConfigUpdate(MinecraftServer server, String key) {
 		for (ServerPlayerEntity spe : server.getPlayerManager().getPlayerList()) {

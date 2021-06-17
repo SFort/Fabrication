@@ -1,6 +1,6 @@
 # Fabrication - Dump edition
 
-This fork has a simple goal. dump everything that can't be ported to 1.17 in under 60 seconds  
+This fork has a simple goal. dump everything that can't be ported to 1.17 in under 2 minutes  
 in the process compleatly ditching:  
 
 - any coding standards
@@ -17,8 +17,14 @@ none of the dropped/broken features will ever be re-implemented on this branch
 as that is not the point of this branch
 #Dropped Features:
 
-(Honestly most are a easy port but i wanna play fabrication 1.17 within the day)
+lots are a easy port but i wanna play fabrication 1.17 within the day
+some of these ware removed at whim because there was a wierd resource pack / Entity tick crash
+so yes few of these are deffinatly perfectly functional and removed
 
+- sync_attacker_yaw
+- alt_absorption_sound
+- legible_sign
+- legacy_command_syntax
 - old_lava
 - disable_bees
 - classic_block_drops
@@ -31,6 +37,10 @@ as that is not the point of this branch
 - silverfish_step
 - grindstone_disenchantig (just use the standalome mod for this)
 - toggle_sprint
+- colored_crack_particle
+- atlas_stuff
+- better_pause_freezing
+- instant_pickup
 
 #Probably Deffinatly broke something but alloted time ran out and it compiles:
 
