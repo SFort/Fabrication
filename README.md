@@ -5,7 +5,7 @@ in the process compleatly ditching:
 
 - any coding standards
 - logic / understanding of the code
-- testing of feature
+- testing of features
 - backwards comatability
 - support / integration with other mods
 - command / UI support
