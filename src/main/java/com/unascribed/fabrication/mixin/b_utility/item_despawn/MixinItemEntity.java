@@ -31,7 +31,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.world.ServerWorld;
@@ -56,7 +56,7 @@ public abstract class MixinItemEntity extends Entity implements SetFromPlayerDea
 	private boolean fabrication$fromPlayerDeath;
 	
 	@Shadow
-	private int age;
+	private int itemAge;
 	@Shadow
 	private UUID thrower;
 	
@@ -201,7 +201,7 @@ public abstract class MixinItemEntity extends Entity implements SetFromPlayerDea
 			age = -32768;
 			fabrication$invincible = true;
 		} else if (time == ParsedTime.INSTANTLY) {
-			remove();
+			remove(RemovalReason.DISCARDED);
 		} else if (time == ParsedTime.UNSET) {
 			fabrication$extraTime = 0;
 		} else {
@@ -217,16 +217,16 @@ public abstract class MixinItemEntity extends Entity implements SetFromPlayerDea
 		}
 	}
 	
-	@Inject(at=@At("TAIL"), method="writeCustomDataToTag(Lnet/minecraft/nbt/CompoundTag;)V")
-	public void writeCustomDataToTag(CompoundTag tag, CallbackInfo ci) {
+	@Inject(at=@At("TAIL"), method="writeCustomDataToNbt")
+	public void writeCustomDataToTag(NbtCompound tag, CallbackInfo ci) {
 		if (fabrication$extraTime > 0) tag.putInt("fabrication:ExtraTime", fabrication$extraTime);
 		tag.putLong("fabrication:TrueAge", fabrication$trueAge);
 		if (fabrication$fromPlayerDeath) tag.putBoolean("fabrication:FromPlayerDeath", true);
 		if (fabrication$invincible) tag.putBoolean("fabrication:Invincible", true);
 	}
 	
-	@Inject(at=@At("TAIL"), method="readCustomDataFromTag(Lnet/minecraft/nbt/CompoundTag;)V")
-	public void readCustomDataFromTag(CompoundTag tag, CallbackInfo ci) {
+	@Inject(at=@At("TAIL"), method="readCustomDataFromNbt")
+	public void readCustomDataFromTag(NbtCompound tag, CallbackInfo ci) {
 		fabrication$extraTime = tag.getInt("fabrication:ExtraTime");
 		fabrication$trueAge = tag.getLong("fabrication:TrueAge");
 		fabrication$fromPlayerDeath = tag.getBoolean("fabrication:FromPlayerDeath");

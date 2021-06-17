@@ -1,27 +1,21 @@
 package com.unascribed.fabrication.support;
 
-import java.awt.Toolkit;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import javax.swing.plaf.metal.MetalLookAndFeel;
+import com.google.common.base.Charsets;
+import com.google.common.base.Enums;
+import com.google.common.base.Joiner;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.*;
+import com.google.common.io.BaseEncoding;
+import com.google.common.io.MoreFiles;
+import com.google.common.io.Resources;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import com.unascribed.fabrication.Agnos;
+import com.unascribed.fabrication.FabLog;
+import com.unascribed.fabrication.QDIni;
+import com.unascribed.fabrication.QDIni.BadValueException;
+import com.unascribed.fabrication.QDIni.IniTransformer;
+import com.unascribed.fabrication.QDIni.SyntaxErrorException;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -29,36 +23,16 @@ import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
-import com.unascribed.fabrication.Agnos;
-import com.unascribed.fabrication.Analytics;
-import com.unascribed.fabrication.FabLog;
-import com.unascribed.fabrication.QDIni;
-import com.unascribed.fabrication.QDIni.BadValueException;
-import com.unascribed.fabrication.QDIni.IniTransformer;
-import com.unascribed.fabrication.QDIni.SyntaxErrorException;
-import com.unascribed.fabrication.support.injection.FailsoftCallbackInjectionInfo;
-import com.unascribed.fabrication.support.injection.FailsoftModifyArgInjectionInfo;
-import com.unascribed.fabrication.support.injection.FailsoftModifyArgsInjectionInfo;
-import com.unascribed.fabrication.support.injection.FailsoftModifyConstantInjectionInfo;
-import com.unascribed.fabrication.support.injection.FailsoftModifyVariableInjectionInfo;
-import com.unascribed.fabrication.support.injection.FailsoftRedirectInjectionInfo;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Enums;
-import com.google.common.base.Joiner;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
-import com.google.common.io.BaseEncoding;
-import com.google.common.io.MoreFiles;
-import com.google.common.io.Resources;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
+import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import java.awt.*;
+import java.io.*;
+import java.lang.reflect.Constructor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.*;
 
 public class MixinConfigPlugin implements IMixinConfigPlugin {
 
@@ -206,13 +180,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 	private static final Set<String> failures = Sets.newHashSet();
 	private static final Set<String> failuresReadOnly = Collections.unmodifiableSet(failures);
 	private static final SetMultimap<String, String> configKeysForDiscoveredClasses = HashMultimap.create();
-	private static boolean analyticsSafe = false;
-	
-	public static void submitConfigAnalytics() {
-		Analytics.submitConfig();
-		analyticsSafe = true;
-	}
-	
+
 	public static String remap(String configKey) {
 		return starMap.getOrDefault(configKey, configKey);
 	}
@@ -318,14 +286,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 			defaults = defaultsByProfile.get(profile);
 		} else {
 			config.put(configKey, Trilean.parseTrilean(newValue));
-		}
-		if ("general.data_upload".equals(configKey)) {
-			if ("true".equals(newValue)) {
-				Analytics.submit("enable_analytics");
-				submitConfigAnalytics();
-			} else {
-				Analytics.deleteId();
-			}
 		}
 		Path configFile = Agnos.getConfigDir().resolve("fabrication").resolve("features.ini");
 		Stopwatch watch = Stopwatch.createStarted();
@@ -467,9 +427,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 				FabLog.warn("Failed to transform configuration file", e);
 			}
 		});
-		if (analyticsSafe) {
-			submitConfigAnalytics();
-		}
 		for (ConfigLoader ldr : loaders) {
 			load(ldr);
 		}
@@ -557,15 +514,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 	public void onLoad(String mixinPackage) {
 		reload();
 		RUNTIME_CHECKS_WAS_ENABLED = isEnabled("general.runtime_checks");
-		Mixins.registerErrorHandlerClass("com.unascribed.fabrication.support.MixinErrorHandler_THIS_ERROR_HANDLER_IS_FOR_SOFT_FAILURE_IN_FABRICATION_ITSELF_AND_DOES_NOT_IMPLY_FABRICATION_IS_RESPONSIBLE_FOR_THE_BELOW_ERROR");
-		FabLog.warn("Fabrication is about to inject into Mixin to add support for failsoft mixins.");
-		FabLog.warn("THE FOLLOWING WARNINGS ARE NOT AN ERROR AND DO NOT IMPLY FABRICATION IS RESPONSIBLE FOR A CRASH.");
-		InjectionInfo.register(FailsoftCallbackInjectionInfo.class);
-		InjectionInfo.register(FailsoftModifyArgInjectionInfo.class);
-		InjectionInfo.register(FailsoftModifyArgsInjectionInfo.class);
-		InjectionInfo.register(FailsoftRedirectInjectionInfo.class);
-		InjectionInfo.register(FailsoftModifyVariableInjectionInfo.class);
-		InjectionInfo.register(FailsoftModifyConstantInjectionInfo.class);
 		FabLog.warn("Injection complete.");
 	}
 

@@ -13,12 +13,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.spongepowered.asm.mixin.throwables.MixinError;
-import org.spongepowered.asm.mixin.throwables.MixinException;
-
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.unascribed.fabrication.support.MixinConfigPlugin;
-import com.unascribed.fabrication.support.MixinErrorHandler_THIS_ERROR_HANDLER_IS_FOR_SOFT_FAILURE_IN_FABRICATION_ITSELF_AND_DOES_NOT_IMPLY_FABRICATION_IS_RESPONSIBLE_FOR_THE_BELOW_ERROR;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
@@ -102,7 +98,7 @@ public class FabRefl {
 			throw rethrow(t);
 		}
 	}
-	
+
 	private static final MethodHandle cpc2sp_data = unreflectGetter("CustomPayloadC2SPacket", () -> CustomPayloadC2SPacket.class, "data", "field_12832", "field_149561_c").get();
 	public static PacketByteBuf getData(CustomPayloadC2SPacket subject) {
 		try {
@@ -510,12 +506,6 @@ public class FabRefl {
 	}
 
 	private static RuntimeException rethrow(Throwable t) {
-		if (!MixinErrorHandler_THIS_ERROR_HANDLER_IS_FOR_SOFT_FAILURE_IN_FABRICATION_ITSELF_AND_DOES_NOT_IMPLY_FABRICATION_IS_RESPONSIBLE_FOR_THE_BELOW_ERROR.actuallyItWasUs && (t instanceof MixinError || t instanceof MixinException)) {
-			throw new RuntimeException("DO NOT REPORT THIS ERROR TO FABRICATION.\n"
-					+ "This is caused by ANOTHER MOD'S MIXIN FAILURE that was initiated by Fabrication initializing reflection.\n"
-					+ "Errors like these show up attributed to whoever was the first person to load the class with the broken mixin.\n"
-					+ "!!!!! DO NOT REPORT THIS ERROR TO FABRICATION !!!!!");
-		}
 		if (t instanceof RuntimeException) {
 			throw (RuntimeException)t;
 		} else if (t instanceof Error) {
@@ -524,7 +514,7 @@ public class FabRefl {
 			throw new RuntimeException(t);
 		}
 	}
-	
+
 	private static <T extends Throwable> RuntimeException rethrow(Throwable t, Class<T> passthru) throws T {
 		if (passthru.isInstance(t)) {
 			throw (T)t;

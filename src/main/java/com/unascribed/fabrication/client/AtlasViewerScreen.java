@@ -130,14 +130,13 @@ public class AtlasViewerScreen extends Screen {
 				sprites.add(s);
 			}
 		}
-		GlStateManager.disableCull();
-		GlStateManager.disableTexture();
+		GlStateManager._disableCull();
+		GlStateManager._disableTexture();
 		for (Sprite s : sprites) {
 			int x = FabRefl.Client.getX(s);
 			int y = FabRefl.Client.getY(s);
 			int w = s.getWidth();
 			int h = s.getHeight();
-			GlStateManager.color4f(1, 0, 0, 0.2f);
 			glBegin(GL_QUADS);
 				glVertex2f(panX+x, panY+y);
 				glVertex2f(panX+x+w, panY+y);
@@ -145,7 +144,7 @@ public class AtlasViewerScreen extends Screen {
 				glVertex2f(panX+x, panY+y+h);
 			glEnd();
 		}
-		GlStateManager.enableTexture();
+		GlStateManager._enableTexture();
 		if (sprites.isEmpty()) {
 			if (mouseX >= 0 && mouseY >= 0 && mouseX < atlasWidth && mouseY < atlasHeight) {
 				renderTooltip(matrices, Lists.<Text>newArrayList(
@@ -173,7 +172,7 @@ public class AtlasViewerScreen extends Screen {
 			}
 			renderTooltip(matrices, Lists.<Text>newArrayList(
 				new LiteralText(s.getId().toString()),
-				new LiteralText("§7At "+x+","+y+" "+w+"×"+h+"×"+s.getFrameCount()+" @"+FabRefl.Client.getFrameIndex(s)+"."+FabRefl.Client.getFrameTicks(s)),
+				new LiteralText("§7At "+x+","+y+" "+w+"×"+h+"×"+s.getDistinctFrameCount()+" @"+FabRefl.Client.getFrameIndex(s)+"."+FabRefl.Client.getFrameTicks(s)),
 				new LiteralText("§7From §f"+src)
 			), (int)(mouseX+panX), (int)(mouseY+panY));
 		} else {
@@ -186,7 +185,7 @@ public class AtlasViewerScreen extends Screen {
 				int w = s.getWidth();
 				int h = s.getHeight();
 				li.add(new LiteralText(s.getId().toString()));
-				li.add(new LiteralText("§7At "+x+","+y+" "+w+"×"+h+"×"+s.getFrameCount()+" @"+FabRefl.Client.getFrameIndex(s)+"."+FabRefl.Client.getFrameTicks(s)));
+				li.add(new LiteralText("§7At "+x+","+y+" "+w+"×"+h+"×"+s.getDistinctFrameCount()+" @"+FabRefl.Client.getFrameIndex(s)+"."+FabRefl.Client.getFrameTicks(s)));
 			}
 			renderTooltip(matrices, li, (int)(mouseX+panX), (int)(mouseY+panY));
 		}

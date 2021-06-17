@@ -382,14 +382,9 @@ public class FeatureFabricationCommand implements Feature {
 	private static void sendFeedback(CommandContext<? extends CommandSource> c, LiteralText text, boolean broadcast) {
 		if (c.getSource() instanceof ServerCommandSource) {
 			((ServerCommandSource)c.getSource()).sendFeedback(text, broadcast);
-		} else {
-			sendFeedbackClient(c, text);
 		}
 	}
 
-	private static void sendFeedbackClient(CommandContext<? extends CommandSource> c, LiteralText text) {
-		FabricationClientCommands.sendFeedback(c, text);
-	}
 
 	private int clearTags(CommandContext<ServerCommandSource> c, Collection<ServerPlayerEntity> players) {
 		for (ServerPlayerEntity spe : players) {

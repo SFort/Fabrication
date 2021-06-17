@@ -20,7 +20,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +35,7 @@ public class MixinMiningToolItem {
 	public void postMine(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity miner, CallbackInfoReturnable<Boolean> ci) {
 		if (!MixinConfigPlugin.isEnabled("*.dimensional_tools")) return;
 		if (world.isClient) return;
-		if ((!(miner instanceof PlayerEntity) || !((PlayerEntity)miner).abilities.creativeMode)) {
+		if ((!(miner instanceof PlayerEntity) || !((PlayerEntity)miner).getAbilities().creativeMode)) {
 			if (!stack.isDamageable()) return;
 			if (stack.getMiningSpeedMultiplier(state) <= 1) {
 				// tool is not effective against this block, don't penalize or reward
@@ -72,7 +72,7 @@ public class MixinMiningToolItem {
 				}
 			}
 			if (factor < 0) {
-				if (!stack.hasTag()) stack.setTag(new CompoundTag());
+				if (!stack.hasTag()) stack.setTag(new NbtCompound());
 				int legacyPartialDamage = stack.getTag().getInt("PartialDamage");
 				if (legacyPartialDamage != 0) {
 					stack.getTag().putDouble("fabrication:PartialDamage", legacyPartialDamage/50D);

@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import io.github.queerbric.pride.PrideClient;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.api.EnvType;
@@ -97,16 +96,6 @@ public class FabricationMod implements ModInitializer {
 				ABSORPTION_HURT = Agnos.registerSoundEvent(new Identifier("fabrication", "absorption_hurt"), new SoundEvent(new Identifier("fabrication", "absorption_hurt")));
 			}
 		}
-		MixinConfigPlugin.submitConfigAnalytics();
-		Analytics.submit("game_launch");
-		if (FabRefl.FORGE && Agnos.getCurrentEnv() == Env.CLIENT) {
-			initPrideLib();
-		}
-	}
-	
-	@Environment(EnvType.CLIENT)
-	private void initPrideLib() {
-		new PrideClient().onInitializeClient();
 	}
 
 	public static void featureError(Feature f, Throwable t) {
@@ -154,7 +143,7 @@ public class FabricationMod implements ModInitializer {
 		ServerChunkManager cm = ((ServerWorld)entity.world).getChunkManager();
 		ThreadedAnvilChunkStorage tacs = cm.threadedAnvilChunkStorage;
 		Int2ObjectMap<EntityTracker> entityTrackers = FabRefl.getEntityTrackers(tacs);
-		EntityTracker tracker = entityTrackers.get(entity.getEntityId());
+		EntityTracker tracker = entityTrackers.get(entity.getId());
 		if (tracker == null) return Collections.emptySet();
 		return FabRefl.getPlayersTracking(tracker);
 	}

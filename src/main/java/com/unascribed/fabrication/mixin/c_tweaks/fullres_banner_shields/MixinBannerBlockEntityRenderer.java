@@ -43,8 +43,8 @@ public class MixinBannerBlockEntityRenderer {
 		if (!(vertexConsumers instanceof Immediate)) return;
 		if (!isBanner) {
 			((Immediate)vertexConsumers).draw();
-			GlStateManager.enablePolygonOffset();
-			GlStateManager.polygonOffset(-3, -3);
+			GlStateManager._enablePolygonOffset();
+			GlStateManager._polygonOffset(-3, -3);
 			Matrix4f mdl = matrices.peek().getModel();
 			Matrix3f nrm = matrices.peek().getNormal();
 			for (Pair<BannerPattern, DyeColor> pattern : patterns) {
@@ -73,7 +73,7 @@ public class MixinBannerBlockEntityRenderer {
 				vc.vertex(mdl, x, y+h, z).color(col[0], col[1], col[2], 1).texture(minU, maxV).overlay(overlay).light(light).normal(nrm, 0, 0, -1).next();
 			}
 			((Immediate)vertexConsumers).draw();
-			GlStateManager.disablePolygonOffset();
+			GlStateManager._disablePolygonOffset();
 			ci.cancel();
 		}
 	}
